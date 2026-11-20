@@ -44,6 +44,12 @@ All of this sits inside one `Pipeline`, with a `LogisticRegression` at the end (
 
 `app.py` loads that file and gives a `/predict` endpoint using FastAPI. `index.html` sends the form data to it and shows the fake probability on the page.
 
+## The web page
+
+- A risk meter shows the model's fake probability, with three results: genuine, be careful (risk of 30% or more but not flagged) and likely fake.
+- Under the result, the page lists red flags it finds in the text, like asking for a fee, asking for Aadhaar or bank details, moving to WhatsApp or Telegram, promising easy money, or using a free email address. These are simple keyword checks on the page itself. They are separate from the model's score.
+- It works on mobile and in dark mode.
+
 ## Results
 
 I tested on 3,576 posts, out of which 181 were fake. These numbers are for the fake class:
@@ -57,8 +63,8 @@ The accuracy looks great, but that is mostly because 95% of the posts are real a
 ## Run it with Docker
 
 ```
-git clone https://github.com/fayzakhan172-sys/Fake-Job-Detector.git
-cd Fake-Job-Detector
+git clone https://github.com/sarikamalviya7869/FakeJobPosting.git
+cd FakeJobPosting
 docker build -t fake-job-detector .
 docker run -p 8000:8000 fake-job-detector
 ```
@@ -81,6 +87,7 @@ Fake Job Post Detector.ipynb        Data prep, training and evaluation
 fake_job_post_detector_model.pkl    Saved model
 requirements.txt                    Python packages
 Dockerfile                          Docker setup
+.dockerignore                       Files Docker should skip
 screenshot.png                      Result for a fake looking post
 screenshot_real.png                 Result for a real looking post
 ```
@@ -97,6 +104,7 @@ screenshot_real.png                 Result for a real looking post
 - Bag of Words does not understand word order or meaning, it only counts words.
 - The dataset is old and mostly English, so newer scam messages or Hinglish posts may slip through.
 - The output is only a probability, not proof. A high score just means the post looks like the fake ones the model has seen before.
+- The red flag list on the page is a plain keyword check, so it can miss new wording and can also trigger on a normal post.
 
 ## What I want to try next
 
